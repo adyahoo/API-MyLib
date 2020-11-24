@@ -24,3 +24,8 @@ use Illuminate\Support\Facades\Route;
 Route::post('login','Api\AuthController@login');
 Route::post('register','Api\AuthController@register');
 Route::get('logout','Api\AuthController@logout');
+
+Route::post('createBook','Api\BookController@StoreBook')->middleware('jwtAuth');
+Route::post('editBook','Api\BookController@EditBook')->middleware('jwtAuth');
+Route::post('searchBook','Api\BookController@SearchBook')->middleware('jwtAuth');
+Route::post('deleteBook','Api\BookController@DestroyBook')->middleware('jwtAuth');

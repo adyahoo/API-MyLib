@@ -33,20 +33,28 @@ class AuthController extends Controller
         $encryptPass = Hash::make($request->password);
 
         $user = new User;
+        $cekEmail = User::where('email',$request->email)->first();
 
-        try{
-            $user->name = $request->name;
-            $user->email = $request->email;
-            $user->password = $encryptPass;
-            $user->save();
-            return $this->login($request);
-
-        }catch(Exception $e){
+        if($cekEmail){
             return response()->json([
                 'success' => false,
-                'message' => ''.$e
+                'message' => 'Email is Already Registered'
             ]);
-        }
+        }else{
+            try{
+                $user->name = $request->name;
+                $user->email = $request->email;
+                $user->password = $encryptPass;
+                $user->save();
+                return $this->login($request);
+    
+            }catch(Exception $e){
+                return response()->json([
+                    'success' => false,
+                    'message' => ''.$e
+                ]);
+            }
+        }        
     }
 
     public function logout(Request $request){
