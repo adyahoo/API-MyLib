@@ -4,15 +4,15 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Book extends Model
+class Inventories extends Model
 {
-    protected $table='books';
+    protected $table = 'inventories';
 
     public function user(){
         return $this->belongsTo(User::class);
     }
 
-    public function inventory(){
-        return $this->hasMany(Inventories::class);
+    public function book(){
+        return $this->belongsTo(Book::class);
     }
 }

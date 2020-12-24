@@ -19,7 +19,7 @@ class AuthController extends Controller
         if(!$token=auth()->attempt($creds)){
             return response()->json([
                 'success' => false,
-                'message' => 'invalid credentials'
+                'message' => 'Email or Password are incorrect'
             ]);
         } return response()->json([
             'success' => true,
@@ -70,5 +70,31 @@ class AuthController extends Controller
                 'message' => ''.$e
             ]);
         }
+    }
+
+    public function userInfo(Request $request){
+        $user = User::find(Auth::user()->id);
+        $user->name = $request->name;
+        $user->lastname = $request->lastname;
+        $photo = '';
+        //check if user provide photo
+        if($request->photo!=''){
+            //give file name with time to avoid duplication
+            // $photo = $user->id."_".time().'.'.$request->photo->extension();
+            $photo = $user->id."_".time().'.jpg';
+            //decode photo string and save to storage
+            file_put_contents('storage/profiles/'.$photo, base64_decode($request->photo));
+            // $request->photo->move(public_path("storage/profiles/"), $photo);
+            $user->photo = $photo;
+        }
+
+        $user->update();
+
+        return response()->json([
+            'success' => true,
+            'photo' => $photo,
+            'name' => $user->name,
+            'lastname' => $user->lastname
+        ]);
     }
 }
