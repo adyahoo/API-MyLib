@@ -68,6 +68,7 @@ class BookController extends Controller
 
     public function EditBook(Request $request){
         $book = Book::where('id',$request->id)->first();
+        $user = $book->user_id;
 
         if(!$book){
             return response()->json([
@@ -80,6 +81,16 @@ class BookController extends Controller
                 // $book->file_path = $request->file_path;
                 $book->author = $request->author;
                 $book->description = $request->description;
+                $cover = '';
+
+                if($request->cover!=''){
+                    // $cover = $user->id."_".time().".".$request->cover->extension();
+                    $cover = $user."_".time().".jpg";
+                    file_put_contents("storage/book/cover/".$cover, base64_decode($request->cover));
+                    // $request->cover->move(public_path("storage/book/cover/"), base64_decode($cover));
+                    $book->cover = $cover;
+                }
+
                 $book->update();
                 return response()->json([
                     'success' => true,
